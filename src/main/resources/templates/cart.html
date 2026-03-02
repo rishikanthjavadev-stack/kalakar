@@ -194,7 +194,24 @@
       <p class="promo-note">We'll ask you to enter your claim code when it's time to pay.</p>
     </div>
 
-    <form th:action="@{/payment/checkout-cart}" method="post">
+    <!-- COD Button -->
+  <a href="/checkout/cod"
+     style="display:block;width:100%;padding:1.1rem;background:#E8621A;color:white;
+            text-decoration:none;text-align:center;font-size:0.85rem;
+            letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.8rem;">
+    💵 Cash on Delivery
+  </a>
+  <!-- Stripe Button -->
+  <form th:action="@{/payment/checkout-cart}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+    <button type="submit"
+            style="display:block;width:100%;padding:1.1rem;background:#0F0C09;
+                   color:white;border:none;cursor:pointer;font-family:Karla,sans-serif;
+                   font-size:0.85rem;letter-spacing:0.2em;text-transform:uppercase;">
+      💳 Pay with Stripe
+    </button>
+  </form>
+  <form th:action="@{/payment/checkout-cart}" method="post" style="display:none">
   <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
   <button type="submit" class="btn-checkout">Pay with Stripe →</button>
 </form>

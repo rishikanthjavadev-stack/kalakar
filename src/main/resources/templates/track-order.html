@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Track Order — KALAKAR</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Bebas+Neue&family=Karla:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --saffron: #E8621A; --night: #0F0C09; --bone: #F2EDE4; --cream: #EDE7D9; --warm-grey: #9C9080; --border: rgba(15,12,9,0.1); }
+    body { font-family: 'Karla', sans-serif; background: var(--cream); color: var(--night); min-height: 100vh; }
+    nav { background: var(--night); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.15em; color: white; text-decoration: none; }
+    .nav-logo span { color: var(--saffron); }
+    nav a.back { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase; }
+    .container { max-width: 760px; margin: 3rem auto; padding: 0 1.5rem; }
+    .page-title { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .page-sub { color: var(--warm-grey); margin-bottom: 2rem; }
+    .search-card { background: white; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 12px rgba(15,12,9,0.06); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-label { font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--warm-grey); }
+    .form-input { padding: 0.85rem 1rem; border: 1.5px solid var(--border); font-family: 'Karla', sans-serif; font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
+    .form-input:focus { border-color: var(--saffron); }
+    .btn-track { width: 100%; padding: 1rem; background: var(--saffron); color: white; border: none; font-family: 'Karla', sans-serif; font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+    .btn-track:hover { background: var(--night); }
+    .alert-error { padding: 0.85rem 1.2rem; background: #fde8e0; color: #c0392b; border-left: 3px solid var(--saffron); margin-bottom: 1.5rem; font-size: 0.85rem; }
+    .order-card { background: white; padding: 2rem; box-shadow: 0 2px 12px rgba(15,12,9,0.06); }
+    .order-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+    .order-id { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 700; }
+    .order-date { color: var(--warm-grey); font-size: 0.85rem; margin-top: 0.3rem; }
+    .status-badge { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.4rem 1rem; display: inline-block; }
+    .status-PENDING        { background: #fff3e0; color: #e65100; }
+    .status-CONFIRMED      { background: #e3f2fd; color: #1565c0; }
+    .status-PACKED         { background: #f3e5f5; color: #6a1b9a; }
+    .status-SHIPPED        { background: #e8eaf6; color: #283593; }
+    .status-OUT_FOR_DELIVERY { background: #fff8e1; color: #f57f17; }
+    .status-DELIVERED      { background: #e8f5e9; color: #2e7d32; }
+    .status-CANCELLED      { background: #ffebee; color: #c62828; }
+    /* Timeline */
+    .timeline { margin: 2rem 0; }
+    .timeline-title { font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--warm-grey); margin-bottom: 1.5rem; }
+    .steps { display: flex; justify-content: space-between; position: relative; }
+    .steps::before { content: ''; position: absolute; top: 20px; left: 0; right: 0; height: 2px; background: var(--border); z-index: 0; }
+    .step { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; flex: 1; position: relative; z-index: 1; }
+    .step-icon { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; background: var(--cream); border: 2px solid var(--border); transition: all 0.3s; }
+    .step.done .step-icon { background: var(--saffron); border-color: var(--saffron); color: white; }
+    .step.active .step-icon { background: white; border-color: var(--saffron); border-width: 3px; box-shadow: 0 0 0 4px rgba(232,98,26,0.15); }
+    .step-label { font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; text-align: center; color: var(--warm-grey); max-width: 70px; }
+    .step.done .step-label, .step.active .step-label { color: var(--night); font-weight: 500; }
+    .step-time { font-size: 0.65rem; color: var(--warm-grey); text-align: center; }
+    /* Tracking info */
+    .tracking-info { background: var(--cream); padding: 1rem 1.5rem; margin: 1.5rem 0; display: flex; gap: 2rem; }
+    .tracking-item { display: flex; flex-direction: column; gap: 0.2rem; }
+    .tracking-label { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-grey); }
+    .tracking-value { font-size: 0.9rem; font-weight: 500; }
+    /* Items */
+    .items-title { font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--warm-grey); margin: 1.5rem 0 1rem; }
+    .item-row { display: flex; gap: 1rem; align-items: center; padding: 0.8rem 0; border-bottom: 1px solid var(--border); }
+    .item-img { width: 56px; height: 56px; object-fit: cover; border: 1px solid var(--border); }
+    .item-img-placeholder { width: 56px; height: 56px; background: var(--cream); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+    .item-name { font-size: 0.95rem; font-weight: 500; flex: 1; }
+    .item-qty { color: var(--warm-grey); font-size: 0.85rem; }
+    .item-price { font-size: 0.95rem; }
+    .order-total { display: flex; justify-content: flex-end; padding-top: 1rem; font-size: 1.1rem; font-family: 'Cormorant Garamond', serif; font-weight: 700; }
+    .btn-back { display: inline-block; margin-top: 1.5rem; padding: 0.8rem 2rem; background: var(--night); color: white; text-decoration: none; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; }
+    .btn-back:hover { background: var(--saffron); }
+    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } .steps { flex-direction: column; gap: 1rem; } .steps::before { display: none; } }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="nav-logo">KAL<span>A</span>KAR</a>
+    <a href="/" class="back">← Back to Store</a>
+  </nav>
+
+  <div class="container">
+    <h1 class="page-title">Track Your Order</h1>
+    <p class="page-sub">Enter your order ID and email to see real-time delivery status.</p>
+
+    <!-- Search Form -->
+    <div class="search-card">
+      <form th:action="@{/track}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Order ID</label>
+            <input class="form-input" type="number" name="orderId" placeholder="e.g. 1042" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input class="form-input" type="email" name="email" placeholder="your@email.com" required/>
+          </div>
+        </div>
+        <button type="submit" class="btn-track">Track Order</button>
+      </form>
+    </div>
+
+    <!-- Error -->
+    <div class="alert-error" th:if="${error}" th:text="${error}"></div>
+
+    <!-- Order Result -->
+    <div class="order-card" th:if="${order}">
+      <div class="order-header">
+        <div>
+          <div class="order-id" th:text="'#KAL-' + ${order.id}"></div>
+          <div class="order-date" th:text="${#temporals.format(order.orderDate, 'MMM dd, yyyy • hh:mm a')}"></div>
+        </div>
+        <span class="status-badge"
+              th:text="${order.status}"
+              th:classappend="${'status-' + order.status}">
+        </span>
+      </div>
+
+      <!-- Timeline -->
+      <div class="timeline">
+        <div class="timeline-title">Delivery Progress</div>
+        <div class="steps">
+
+          <!-- Step 1: Order Placed -->
+          <div class="step done">
+            <div class="step-icon">📋</div>
+            <div class="step-label">Order Placed</div>
+            <div class="step-time" th:text="${#temporals.format(order.orderDate, 'MMM dd')}"></div>
+          </div>
+
+          <!-- Step 2: Confirmed -->
+          <div class="step"
+               th:classappend="${order.status.name() == 'CONFIRMED' or order.status.name() == 'PACKED' or order.status.name() == 'SHIPPED' or order.status.name() == 'OUT_FOR_DELIVERY' or order.status.name() == 'DELIVERED'} ? 'done' : ''">
+            <div class="step-icon">✅</div>
+            <div class="step-label">Confirmed</div>
+            <div class="step-time" th:if="${order.confirmedAt}" th:text="${#temporals.format(order.confirmedAt, 'MMM dd')}"></div>
+          </div>
+
+          <!-- Step 3: Packed -->
+          <div class="step"
+               th:classappend="${order.status.name() == 'PACKED' or order.status.name() == 'SHIPPED' or order.status.name() == 'OUT_FOR_DELIVERY' or order.status.name() == 'DELIVERED'} ? 'done' : ''">
+            <div class="step-icon">📦</div>
+            <div class="step-label">Packed</div>
+            <div class="step-time" th:if="${order.packedAt}" th:text="${#temporals.format(order.packedAt, 'MMM dd')}"></div>
+          </div>
+
+          <!-- Step 4: Shipped -->
+          <div class="step"
+               th:classappend="${order.status.name() == 'SHIPPED' or order.status.name() == 'OUT_FOR_DELIVERY' or order.status.name() == 'DELIVERED'} ? 'done' : ''">
+            <div class="step-icon">🚚</div>
+            <div class="step-label">Shipped</div>
+            <div class="step-time" th:if="${order.shippedAt}" th:text="${#temporals.format(order.shippedAt, 'MMM dd')}"></div>
+          </div>
+
+          <!-- Step 5: Out for Delivery -->
+          <div class="step"
+               th:classappend="${order.status.name() == 'OUT_FOR_DELIVERY' or order.status.name() == 'DELIVERED'} ? 'done' : ''">
+            <div class="step-icon">📍</div>
+            <div class="step-label">Out for Delivery</div>
+            <div class="step-time" th:if="${order.outForDeliveryAt}" th:text="${#temporals.format(order.outForDeliveryAt, 'MMM dd')}"></div>
+          </div>
+
+          <!-- Step 6: Delivered -->
+          <div class="step"
+               th:classappend="${order.status.name() == 'DELIVERED'} ? 'done' : ''">
+            <div class="step-icon">🎉</div>
+            <div class="step-label">Delivered</div>
+            <div class="step-time" th:if="${order.deliveredAt}" th:text="${#temporals.format(order.deliveredAt, 'MMM dd')}"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Tracking Info -->
+      <div class="tracking-info" th:if="${order.trackingNumber}">
+        <div class="tracking-item">
+          <span class="tracking-label">Tracking Number</span>
+          <span class="tracking-value" th:text="${order.trackingNumber}"></span>
+        </div>
+        <div class="tracking-item" th:if="${order.courierName}">
+          <span class="tracking-label">Courier</span>
+          <span class="tracking-value" th:text="${order.courierName}"></span>
+        </div>
+      </div>
+
+      <!-- Items -->
+      <div class="items-title">Items in this order</div>
+      <div th:each="item : ${order.items}">
+        <div class="item-row">
+          <img class="item-img"
+               th:if="${item.productImage != null}"
+               th:src="@{'/uploads/' + ${item.productImage}}"
+               th:alt="${item.productName}"/>
+          <div class="item-img-placeholder" th:if="${item.productImage == null}">👗</div>
+          <div class="item-name" th:text="${item.productName}"></div>
+          <div class="item-qty" th:text="'Qty: ' + ${item.quantity}"></div>
+          <div class="item-price" th:text="'₹' + ${item.price}"></div>
+        </div>
+      </div>
+      <div class="order-total">
+        Total: ₹<span th:text="${order.totalAmount}"></span>
+      </div>
+
+      <a href="/orders" class="btn-back">← My Orders</a>
+    </div>
+  </div>
+</body>
+</html>

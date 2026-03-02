@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Out — KALAKAR</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Bebas+Neue&family=Karla:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --saffron: #E8621A; --night: #0F0C09; --cream: #EDE7D9; --warm-grey: #9C9080; }
+    body { font-family: 'Karla', sans-serif; background: var(--cream); color: var(--night); min-height: 100vh; display: flex; flex-direction: column; }
+    nav { background: var(--night); padding: 1rem 2rem; }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.15em; color: white; text-decoration: none; }
+    .nav-logo span { color: var(--saffron); }
+    .container { flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+    .card { background: white; padding: 4rem 3rem; text-align: center; max-width: 480px; width: 100%; box-shadow: 0 4px 32px rgba(15,12,9,0.08); }
+    .bye-icon { font-size: 3.5rem; margin-bottom: 1.5rem; display: block; }
+    .title { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 700; margin-bottom: 0.8rem; }
+    .subtitle { color: var(--warm-grey); font-size: 0.95rem; line-height: 1.8; margin-bottom: 2.5rem; }
+    .divider { width: 40px; height: 2px; background: var(--saffron); margin: 0 auto 2.5rem; }
+    .btn-primary { display: block; width: 100%; padding: 1rem; background: var(--saffron); color: white; text-decoration: none; font-size: 0.82rem; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.8rem; transition: background 0.2s; }
+    .btn-primary:hover { background: var(--night); }
+    .btn-secondary { display: block; width: 100%; padding: 1rem; background: transparent; color: var(--night); text-decoration: none; font-size: 0.82rem; letter-spacing: 0.2em; text-transform: uppercase; border: 1.5px solid rgba(15,12,9,0.15); transition: all 0.2s; }
+    .btn-secondary:hover { border-color: var(--saffron); color: var(--saffron); }
+    .footer-text { margin-top: 2rem; font-size: 0.75rem; color: var(--warm-grey); letter-spacing: 0.05em; }
+    /* Auto redirect countdown */
+    .countdown { font-size: 0.78rem; color: var(--warm-grey); margin-bottom: 1.5rem; }
+    .countdown span { color: var(--saffron); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="nav-logo">KAL<span>A</span>KAR</a>
+  </nav>
+
+  <div class="container">
+    <div class="card">
+      <span class="bye-icon">👋</span>
+      <h1 class="title">See You Soon!</h1>
+      <div class="divider"></div>
+      <p class="subtitle">You've been signed out successfully.<br/>Thank you for shopping with Kalakar.</p>
+      <p class="countdown">Redirecting in <span id="timer">5</span> seconds...</p>
+      <a href="/login" class="btn-primary">Sign In Again</a>
+      <a href="/" class="btn-secondary">Browse Collection</a>
+      <p class="footer-text">© 2025 Kalakar — Wear Your Art</p>
+    </div>
+  </div>
+
+  <script>
+    // Auto redirect to home after 5 seconds
+    let seconds = 5;
+    const timer = document.getElementById('timer');
+    const interval = setInterval(() => {
+      seconds--;
+      timer.textContent = seconds;
+      if (seconds <= 0) {
+        clearInterval(interval);
+        window.location.href = '/';
+      }
+    }, 1000);
+  </script>
+</body>
+</html>

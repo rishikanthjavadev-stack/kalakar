@@ -1,5 +1,6 @@
 package com.kalakar.kalakar.controller;
 
+import com.kalakar.kalakar.mapper.ProductMapper;
 import com.kalakar.kalakar.repository.ProductRepository;
 import com.kalakar.kalakar.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +16,20 @@ public class HomeController {
 
     @Autowired private ProductRepository productRepository;
     @Autowired private CartService cartService;
+    @Autowired private ProductMapper productMapper;
 
     @GetMapping("/")
     public String home(@RequestParam(required = false) String logout,
                        Model model,
                        Principal principal) {
-        model.addAttribute("products", productRepository.findAll());
+        model.addAttribute("products",
+            productMapper.toDTOList(productRepository.findAll()));
         if (logout != null) {
             model.addAttribute("toast", "You have been logged out. See you soon! 👋");
         }
         if (principal != null) {
-            model.addAttribute("cartCount", cartService.getCartCount(principal.getName()));
+            model.addAttribute("cartCount",
+                cartService.getCartCount(principal.getName()));
         } else {
             model.addAttribute("cartCount", 0);
         }

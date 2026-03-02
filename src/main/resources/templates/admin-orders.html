@@ -111,7 +111,7 @@
             <td>
               <span class="status"
                     th:text="${order.status}"
-                    th:classappend="${'status-' + order.status}">
+                    th:classappend="${'status-' + order.status.name()}">
               </span>
             </td>
             <td>
@@ -119,11 +119,11 @@
                     style="display:flex;gap:0.4rem">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                 <select class="status-select" name="status">
-                  <option value="PENDING"   th:selected="${order.status == 'PENDING'}">Pending</option>
-                  <option value="CONFIRMED" th:selected="${order.status == 'CONFIRMED'}">Confirmed</option>
-                  <option value="SHIPPED"   th:selected="${order.status == 'SHIPPED'}">Shipped</option>
-                  <option value="DELIVERED" th:selected="${order.status == 'DELIVERED'}">Delivered</option>
-                  <option value="CANCELLED" th:selected="${order.status == 'CANCELLED'}">Cancelled</option>
+                  <option value="PENDING"   th:selected="${order.status.name() == 'PENDING'}">Pending</option>
+                  <option value="CONFIRMED" th:selected="${order.status.name() == 'CONFIRMED'}">Confirmed</option>
+                  <option value="SHIPPED"   th:selected="${order.status.name() == 'SHIPPED'}">Shipped</option>
+                  <option value="DELIVERED" th:selected="${order.status.name() == 'DELIVERED'}">Delivered</option>
+                  <option value="CANCELLED" th:selected="${order.status.name() == 'CANCELLED'}">Cancelled</option>
                 </select>
                 <button type="submit" class="btn-update">Save</button>
               </form>

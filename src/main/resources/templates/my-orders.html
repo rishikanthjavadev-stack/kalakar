@@ -68,7 +68,7 @@
           <div class="order-date" th:text="${#temporals.format(order.orderDate, 'MMM dd, yyyy')}"></div>
         </div>
         <span class="status" th:text="${order.status}"
-              th:classappend="${'status-' + order.status}"></span>
+              th:classappend="${'status-' + order.status.name()}"></span>
       </div>
       <div class="order-items">
         <div th:each="item : ${order.items}" class="order-item">

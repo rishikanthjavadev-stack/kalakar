@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<body style="font-family:'Helvetica Neue',sans-serif;background:#F2EDE4;padding:2rem;margin:0;">
+  <div style="max-width:560px;margin:0 auto;background:white;padding:3rem;">
+    <h1 style="font-family:Georgia,serif;font-size:2rem;color:#0F0C09;margin-bottom:0;">
+      KAL<span style="color:#E8621A;">A</span>KAR
+    </h1>
+    <hr style="border:none;border-top:2px solid #E8621A;margin:1rem 0 2rem;"/>
+    <p style="font-size:0.85rem;letter-spacing:0.15em;text-transform:uppercase;color:#9C9080;">Delivered</p>
+    <h2 style="font-family:Georgia,serif;font-size:1.8rem;color:#0F0C09;margin:0.5rem 0 1.5rem;">
+      Your order has arrived! 🎉
+    </h2>
+    <p style="color:#9C9080;line-height:1.8;">Hi {{customerName}},</p>
+    <p style="color:#9C9080;line-height:1.8;">{{aiContent}}</p>
+    <div style="background:#F2EDE4;padding:1.5rem;margin:2rem 0;">
+      <p style="font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:#9C9080;margin:0 0 0.5rem;">Order ID</p>
+      <p style="font-size:1.5rem;font-family:Georgia,serif;color:#0F0C09;margin:0;">#KAL-{{orderId}}</p>
+    </div>
+    <a href="{{trackUrl}}"
+       style="display:inline-block;padding:1rem 2.5rem;background:#E8621A;color:white;
+              text-decoration:none;font-size:0.85rem;letter-spacing:0.15em;text-transform:uppercase;margin-right:1rem;">
+      View Order
+    </a>
+    <a href="{{storeUrl}}"
+       style="display:inline-block;padding:1rem 2.5rem;background:#0F0C09;color:white;
+              text-decoration:none;font-size:0.85rem;letter-spacing:0.15em;text-transform:uppercase;">
+      Shop Again
+    </a>
+    <hr style="border:none;border-top:1px solid #EDE7D9;margin:2rem 0 1rem;"/>
+    <p style="color:#ccc;font-size:0.72rem;">© 2025 Kalakar — Wear Your Art</p>
+  </div>
+</body>
+</html>

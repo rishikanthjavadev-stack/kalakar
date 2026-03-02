@@ -1,5 +1,9 @@
 package com.kalakar.kalakar.controller;
 
+import com.kalakar.kalakar.dto.ProductCreateDTO;
+import com.kalakar.kalakar.dto.ProductDTO;
+import com.kalakar.kalakar.mapper.OrderMapper;
+import com.kalakar.kalakar.mapper.ProductMapper;
 import com.kalakar.kalakar.model.Product;
 import com.kalakar.kalakar.repository.ProductRepository;
 import com.kalakar.kalakar.service.ImageService;
@@ -11,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 
 @Controller
@@ -21,45 +24,42 @@ public class AdminController {
     @Autowired private ProductRepository productRepository;
     @Autowired private ImageService imageService;
     @Autowired private OrderService orderService;
+    @Autowired private ProductMapper productMapper;
+    @Autowired private OrderMapper orderMapper;
 
     @GetMapping("/products")
     public String adminProducts(Model model) {
-        model.addAttribute("products", productRepository.findAll());
+        model.addAttribute("products",
+            productMapper.toDTOList(productRepository.findAll()));
         return "admin-products";
     }
 
     @GetMapping("/products/search")
     public String searchProducts(@RequestParam String q, Model model) {
         model.addAttribute("products",
-            productRepository.findByNameContainingIgnoreCase(q));
+            productMapper.toDTOList(
+                productRepository.findByNameContainingIgnoreCase(q)));
         return "admin-products";
     }
 
     @GetMapping("/products/add")
-    public String addProductForm() {
+    public String addProductForm(Model model) {
+        model.addAttribute("product", new ProductCreateDTO());
         return "admin-add-product";
     }
 
     @PostMapping("/products/add")
     public String addProduct(
-            @RequestParam String name,
-            @RequestParam String category,
-            @RequestParam String fabric,
-            @RequestParam BigDecimal price,
-            @RequestParam(required = false) BigDecimal oldPrice,
-            @RequestParam(required = false) String badge,
+            @ModelAttribute ProductCreateDTO dto,
             @RequestParam(required = false) MultipartFile image,
             Model model) {
         try {
-            Product product = new Product();
-            product.setName(name);
-            product.setCategory(category);
-            product.setFabric(fabric);
-            product.setPrice(price);
-            product.setOldPrice(oldPrice);
-            product.setBadge((badge != null && !badge.isEmpty()) ? badge : null);
+            Product product = productMapper.toEntity(dto);
             if (image != null && !image.isEmpty()) {
                 product.setImageUrl(imageService.saveImage(image));
+            }
+            if (product.getBadge() != null && product.getBadge().isEmpty()) {
+                product.setBadge(null);
             }
             productRepository.save(product);
             return "redirect:/admin/products?success=true";
@@ -73,35 +73,28 @@ public class AdminController {
     public String editProductForm(@PathVariable Long id, Model model) {
         Product product = productRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Product not found"));
-        model.addAttribute("product", product);
+        model.addAttribute("product", productMapper.toDTO(product));
         return "admin-edit-product";
     }
 
     @PostMapping("/products/edit/{id}")
     public String editProduct(
             @PathVariable Long id,
-            @RequestParam String name,
-            @RequestParam String category,
-            @RequestParam String fabric,
-            @RequestParam BigDecimal price,
-            @RequestParam(required = false) BigDecimal oldPrice,
-            @RequestParam(required = false) String badge,
+            @ModelAttribute ProductCreateDTO dto,
             @RequestParam(required = false) MultipartFile image,
             Model model) {
         try {
             Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
-            product.setName(name);
-            product.setCategory(category);
-            product.setFabric(fabric);
-            product.setPrice(price);
-            product.setOldPrice(oldPrice);
-            product.setBadge((badge != null && !badge.isEmpty()) ? badge : null);
+            productMapper.updateEntityFromDTO(dto, product);
             if (image != null && !image.isEmpty()) {
                 if (product.getImageUrl() != null) {
                     imageService.deleteImage(product.getImageUrl());
                 }
                 product.setImageUrl(imageService.saveImage(image));
+            }
+            if (product.getBadge() != null && product.getBadge().isEmpty()) {
+                product.setBadge(null);
             }
             productRepository.save(product);
             return "redirect:/admin/products?success=true";
@@ -127,11 +120,11 @@ public class AdminController {
         }
     }
 
-    // ── Admin Orders ──
     @GetMapping("/orders")
     public String adminOrders(Model model) {
         try {
-            model.addAttribute("orders", orderService.getAllOrders());
+            model.addAttribute("orders",
+                orderMapper.toDTOList(orderService.getAllOrders()));
         } catch (Exception e) {
             System.err.println("Error loading orders: " + e.getMessage());
             model.addAttribute("orders", new ArrayList<>());
@@ -153,7 +146,8 @@ public class AdminController {
     @GetMapping("/orders/{id}")
     public String adminOrderDetail(@PathVariable Long id, Model model) {
         try {
-            model.addAttribute("order", orderService.getOrderById(id));
+            model.addAttribute("order",
+                orderMapper.toDTO(orderService.getOrderById(id)));
         } catch (Exception e) {
             System.err.println("Error loading order: " + e.getMessage());
         }

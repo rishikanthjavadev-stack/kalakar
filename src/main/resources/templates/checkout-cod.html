@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout — KALAKAR</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Bebas+Neue&family=Karla:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --saffron: #E8621A; --night: #0F0C09; --bone: #F2EDE4; --cream: #EDE7D9; --warm-grey: #9C9080; }
+    body { font-family: 'Karla', sans-serif; background: var(--cream); color: var(--night); }
+    nav { background: var(--night); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.15em; color: white; text-decoration: none; }
+    .nav-logo span { color: var(--saffron); }
+    .container { max-width: 1000px; margin: 3rem auto; padding: 0 1.5rem; display: grid; grid-template-columns: 1fr 400px; gap: 2rem; }
+    .section-title { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--warm-grey); margin-bottom: 1.5rem; }
+    .form-card { background: white; padding: 2rem; box-shadow: 0 2px 12px rgba(15,12,9,0.06); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+    .form-label { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--warm-grey); }
+    .form-input { padding: 0.85rem 1rem; border: 1.5px solid rgba(15,12,9,0.1); font-family: 'Karla', sans-serif; font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
+    .form-input:focus { border-color: var(--saffron); }
+    .cod-badge { background: #e8f5e9; color: #2e7d32; padding: 0.8rem 1.2rem; font-size: 0.82rem; letter-spacing: 0.05em; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .btn-place { width: 100%; padding: 1.1rem; background: var(--saffron); color: white; border: none; font-family: 'Karla', sans-serif; font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; margin-top: 1rem; transition: background 0.2s; }
+    .btn-place:hover { background: var(--night); }
+    /* Order Summary */
+    .summary-card { background: white; padding: 2rem; box-shadow: 0 2px 12px rgba(15,12,9,0.06); height: fit-content; position: sticky; top: 2rem; }
+    .item-row { display: flex; gap: 1rem; align-items: center; padding: 0.8rem 0; border-bottom: 1px solid rgba(15,12,9,0.06); }
+    .item-img { width: 56px; height: 56px; object-fit: cover; }
+    .item-img-placeholder { width: 56px; height: 56px; background: var(--cream); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+    .item-info { flex: 1; }
+    .item-name { font-size: 0.9rem; font-weight: 500; }
+    .item-qty { font-size: 0.78rem; color: var(--warm-grey); }
+    .item-price { font-size: 0.9rem; }
+    .total-row { display: flex; justify-content: space-between; padding: 1rem 0 0; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700; }
+    .alert-error { padding: 0.85rem 1.2rem; background: #fde8e0; color: #c0392b; border-left: 3px solid var(--saffron); margin-bottom: 1.5rem; font-size: 0.85rem; }
+    @media (max-width: 768px) { .container { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="nav-logo">KAL<span>A</span>KAR</a>
+    <a href="/cart" style="color:rgba(255,255,255,0.6);text-decoration:none;font-size:0.82rem;letter-spacing:0.08em;text-transform:uppercase;">← Back to Cart</a>
+  </nav>
+
+  <div class="container">
+    <!-- Left: Form -->
+    <div>
+      <p class="section-title">Delivery Details</p>
+
+      <div class="alert-error" th:if="${error}" th:text="${error}"></div>
+
+      <div class="form-card">
+        <div class="cod-badge">
+          💵 Cash on Delivery — Pay when your order arrives!
+        </div>
+
+        <form th:action="@{/checkout/cod/place}" method="post">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input class="form-input" type="text" name="customerName" required placeholder="Your full name"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input class="form-input" type="tel" name="customerPhone" required placeholder="10-digit number"/>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Street Address</label>
+            <input class="form-input" type="text" name="address" required placeholder="House/Flat No, Street, Area"/>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">City</label>
+              <input class="form-input" type="text" name="city" required placeholder="City"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">State</label>
+              <input class="form-input" type="text" name="state" required placeholder="State"/>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">PIN Code</label>
+            <input class="form-input" type="text" name="zip" required placeholder="6-digit PIN"/>
+          </div>
+
+          <button type="submit" class="btn-place">
+            Place Order — Cash on Delivery
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Right: Order Summary -->
+    <div>
+      <p class="section-title">Order Summary</p>
+      <div class="summary-card">
+        <div th:each="item : ${cart.items}">
+          <div class="item-row">
+            <img class="item-img"
+                 th:if="${item.productImage != null}"
+                 th:src="@{'/uploads/' + ${item.productImage}}"
+                 th:alt="${item.productName}"/>
+            <div class="item-img-placeholder" th:if="${item.productImage == null}">👗</div>
+            <div class="item-info">
+              <div class="item-name" th:text="${item.productName}"></div>
+              <div class="item-qty" th:text="'Qty: ' + ${item.quantity}"></div>
+            </div>
+            <div class="item-price" th:text="'₹' + ${item.price}"></div>
+          </div>
+        </div>
+        <div class="total-row">
+          <span>Total</span>
+          <span th:text="'₹' + ${cart.subtotal}"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

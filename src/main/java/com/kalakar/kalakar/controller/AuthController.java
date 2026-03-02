@@ -1,6 +1,7 @@
 package com.kalakar.kalakar.controller;
 
 import com.kalakar.kalakar.service.EmailService;
+import com.kalakar.kalakar.service.OrderNotificationService;
 import com.kalakar.kalakar.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,15 +13,18 @@ public class AuthController {
 
     @Autowired private UserService userService;
     @Autowired private EmailService emailService;
+    @Autowired private OrderNotificationService notificationService;
 
     @GetMapping("/login")
     public String loginPage(@RequestParam(required = false) String error,
                             @RequestParam(required = false) String logout,
                             @RequestParam(required = false) String registered,
+                            @RequestParam(required = false) String reset,
                             Model model) {
         if (error != null)      model.addAttribute("error",   "Invalid email or password.");
         if (logout != null)     model.addAttribute("logout",  "You have been logged out.");
         if (registered != null) model.addAttribute("success", "Account created! Please sign in.");
+        if (reset != null)      model.addAttribute("success", "Password reset! Please sign in.");
         return "login";
     }
 
@@ -46,41 +50,38 @@ public class AuthController {
             return "register";
         }
         userService.registerUser(fullName, email, password);
+        // Send AI welcome email
+        try {
+            notificationService.sendWelcomeEmail(email, fullName);
+        } catch (Exception e) {
+            System.err.println("Welcome email failed: " + e.getMessage());
+        }
         return "redirect:/login?registered=true";
     }
 
-    // ── Forgot Password ──
-    // ── Forgot Password ──
     @GetMapping("/forgot-password")
-    public String forgotPasswordPage() {
-        return "forgot-password";
-    }
+    public String forgotPasswordPage() { return "forgot-password"; }
 
     @PostMapping("/forgot-password")
-    public String forgotPasswordSubmit(@RequestParam String email, Model model) {
-
+    public String forgotPasswordSubmit(@RequestParam String email,
+                                        Model model) {
         if (!userService.emailExists(email)) {
             model.addAttribute("success",
-                    "If that email is registered, a reset link has been sent.");
+                "If that email is registered, a reset link has been sent.");
             return "forgot-password";
         }
-
         try {
             String token = userService.createResetToken(email);
             emailService.sendPasswordResetEmail(email, token);
-
             model.addAttribute("success",
-                    "Reset link sent! Check your inbox at " + email);
-
+                "Reset link sent! Check your inbox at " + email);
         } catch (Exception e) {
             model.addAttribute("error",
-                    "Could not send email. Please try again later.");
+                "Could not send email. Please try again later.");
         }
-
         return "forgot-password";
     }
 
-    // ── Reset Password ──
     @GetMapping("/reset-password")
     public String resetPasswordPage(@RequestParam String token, Model model) {
         if (!userService.isValidResetToken(token)) {
@@ -94,9 +95,9 @@ public class AuthController {
 
     @PostMapping("/reset-password")
     public String resetPasswordSubmit(@RequestParam String token,
-                                      @RequestParam String password,
-                                      @RequestParam String confirmPassword,
-                                      Model model) {
+                                       @RequestParam String password,
+                                       @RequestParam String confirmPassword,
+                                       Model model) {
         if (!password.equals(confirmPassword)) {
             model.addAttribute("error", "Passwords do not match.");
             model.addAttribute("token", token);
@@ -109,9 +110,19 @@ public class AuthController {
         }
         boolean success = userService.resetPassword(token, password);
         if (!success) {
-            model.addAttribute("error", "Reset link expired. Please request a new one.");
+            model.addAttribute("error",
+                "Reset link expired. Please request a new one.");
             return "forgot-password";
         }
         return "redirect:/login?reset=true";
     }
+
+    // Handle GET /logout gracefully - show proper page
+    @GetMapping("/logout")
+    public String logoutPage() {
+        return "logout";
+    }
+
+    @GetMapping("/access-denied")
+    public String accessDenied() { return "access-denied"; }
 }

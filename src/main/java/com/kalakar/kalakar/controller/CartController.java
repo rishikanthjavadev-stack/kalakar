@@ -1,5 +1,7 @@
 package com.kalakar.kalakar.controller;
 
+import com.kalakar.kalakar.dto.CartDTO;
+import com.kalakar.kalakar.mapper.CartMapper;
 import com.kalakar.kalakar.model.Cart;
 import com.kalakar.kalakar.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,17 +15,17 @@ import java.security.Principal;
 public class CartController {
 
     @Autowired private CartService cartService;
+    @Autowired private CartMapper cartMapper;
 
-    // View cart
     @GetMapping("/cart")
     public String viewCart(Principal principal, Model model) {
         if (principal == null) return "redirect:/login";
         Cart cart = cartService.getOrCreateCart(principal.getName());
-        model.addAttribute("cart", cart);
+        CartDTO cartDTO = cartMapper.toDTO(cart);
+        model.addAttribute("cart", cartDTO);
         return "cart";
     }
 
-    // Add to cart
     @PostMapping("/cart/add")
     public String addToCart(@RequestParam Long productId,
                             @RequestParam(defaultValue = "1") int quantity,
@@ -34,7 +36,6 @@ public class CartController {
         return "redirect:" + redirect;
     }
 
-    // Update quantity
     @PostMapping("/cart/update")
     public String updateQuantity(@RequestParam Long itemId,
                                  @RequestParam int quantity,
@@ -44,7 +45,6 @@ public class CartController {
         return "redirect:/cart";
     }
 
-    // Remove item
     @PostMapping("/cart/remove")
     public String removeItem(@RequestParam Long itemId,
                              Principal principal) {
@@ -53,7 +53,6 @@ public class CartController {
         return "redirect:/cart";
     }
 
-    // Clear cart
     @PostMapping("/cart/clear")
     public String clearCart(Principal principal) {
         if (principal == null) return "redirect:/login";
