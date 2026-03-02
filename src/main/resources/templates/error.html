@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Oops — KALAKAR</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Karla&display=swap" rel="stylesheet"/>
+    <style>
+        body {
+          font-family: 'Karla', sans-serif;
+          background: #F2EDE4; color: #0F0C09;
+          display: flex; align-items: center; justify-content: center;
+          min-height: 100vh; text-align: center;
+        }
+        h1 { font-family: 'Bebas Neue', sans-serif; font-size: 6rem; color: #E8621A; line-height: 1; }
+        p  { color: #9C9080; margin: 1rem 0 2rem; font-size: 1rem; }
+        a  {
+          padding: 0.8rem 2rem; background: #0F0C09; color: #F2EDE4;
+          text-decoration: none; font-size: 0.8rem; letter-spacing: 0.15em;
+          text-transform: uppercase;
+        }
+        a:hover { background: #E8621A; }
+        .msg { font-size: 0.78rem; color: #bbb; margin-top: 1.5rem; }
+    </style>
+</head>
+<body>
+<div>
+    <h1>OOPS</h1>
+    <p>Something went wrong. Don't worry, your cart is safe!</p>
+    <a href="/">← Back to Store</a>
+    <p class="msg" th:text="${errorMessage}"></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Payment Success — KALAKAR</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Bebas+Neue&family=Karla:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Karla', sans-serif; background: #F2EDE4; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .card { background: white; padding: 3rem; max-width: 480px; width: 100%; text-align: center; box-shadow: 0 4px 24px rgba(15,12,9,0.08); }
+    .check { font-size: 4rem; margin-bottom: 1rem; }
+    h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .amount { font-size: 2rem; color: #E8621A; font-family: 'Cormorant Garamond', serif; margin: 1rem 0; }
+    p { color: #9C9080; margin-bottom: 0.5rem; font-size: 0.9rem; }
+    .links { display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; }
+    a { padding: 0.8rem 2rem; text-decoration: none; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; }
+    .btn-primary { background: #0F0C09; color: #F2EDE4; }
+    .btn-secondary { border: 1.5px solid #0F0C09; color: #0F0C09; }
+    .btn-primary:hover { background: #E8621A; }
+    .btn-secondary:hover { background: #0F0C09; color: #F2EDE4; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="check">✅</div>
+    <h1>Payment Successful!</h1>
+    <div class="amount" th:if="${amountPaid}" th:text="'₹' + ${amountPaid}"></div>
+    <p th:if="${customerEmail}" th:text="'Receipt sent to ' + ${customerEmail}"></p>
+    <p>Thank you for shopping with Kalakar!</p>
+    <div class="links">
+      <a href="/orders" class="btn-primary">View Orders</a>
+      <a href="/" class="btn-secondary">Continue Shopping</a>
+    </div>
+  </div>
+</body>
+</html>

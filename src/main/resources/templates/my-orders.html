@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>My Orders — KALAKAR</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Bebas+Neue&family=Karla:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --saffron: #E8621A; --night: #0F0C09; --bone: #F2EDE4; --cream: #EDE7D9; --warm-grey: #9C9080; --border: rgba(15,12,9,0.1); }
+    body { font-family: 'Karla', sans-serif; background: var(--bone); color: var(--night); }
+    nav { background: var(--night); padding: 1.2rem 3rem; display: flex; justify-content: space-between; align-items: center; }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: white; text-decoration: none; letter-spacing: 0.15em; }
+    .nav-logo span { color: var(--saffron); }
+    .nav-links { display: flex; gap: 1.5rem; }
+    .nav-links a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.82rem; }
+    .nav-links a:hover { color: white; }
+    .main { max-width: 900px; margin: 3rem auto; padding: 0 2rem; }
+    .page-title { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 700; margin-bottom: 2rem; }
+    .order-card { background: white; margin-bottom: 1.5rem; overflow: hidden; }
+    .order-header { padding: 1.2rem 1.5rem; background: var(--cream); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border); }
+    .order-id { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 700; }
+    .order-date { font-size: 0.8rem; color: var(--warm-grey); }
+    .status { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.3rem 0.8rem; }
+    .status-PENDING   { background: #fff3e0; color: #e65100; border: 1px solid #ffb74d; }
+    .status-CONFIRMED { background: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; }
+    .status-SHIPPED   { background: #f3e5f5; color: #6a1b9a; border: 1px solid #ce93d8; }
+    .status-DELIVERED { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+    .status-CANCELLED { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+    .order-items { padding: 1.2rem 1.5rem; }
+    .order-item { display: flex; gap: 1rem; align-items: center; padding: 0.8rem 0; border-bottom: 1px solid var(--border); }
+    .order-item:last-child { border-bottom: none; }
+    .item-img { width: 56px; height: 56px; object-fit: cover; background: var(--cream); border: 1px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+    .item-img img { width: 100%; height: 100%; object-fit: cover; }
+    .item-name { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 600; }
+    .item-sub { font-size: 0.78rem; color: var(--warm-grey); margin-top: 0.2rem; }
+    .item-price { margin-left: auto; font-weight: 600; font-size: 0.95rem; }
+    .order-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .order-total { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 700; }
+    .empty-state { text-align: center; padding: 4rem; color: var(--warm-grey); }
+    .empty-state h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--night); margin-bottom: 0.5rem; }
+    .btn { display: inline-block; padding: 0.7rem 1.8rem; background: var(--saffron); color: white; text-decoration: none; font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; transition: background 0.2s; }
+    .btn:hover { background: var(--night); }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="nav-logo">KAL<span>A</span>KAR</a>
+    <div class="nav-links">
+      <a href="/">Shop</a>
+      <a href="/orders">My Orders</a>
+      <a href="/logout">Logout</a>
+    </div>
+  </nav>
+
+  <div class="main">
+    <h1 class="page-title">My Orders</h1>
+
+    <div th:if="${orders == null or orders.empty}" class="empty-state">
+      <h3>No orders yet</h3>
+      <p style="margin-bottom:1.5rem">Start shopping to place your first order!</p>
+      <a href="/" class="btn">Shop Now</a>
+    </div>
+
+    <div th:each="order : ${orders}" class="order-card">
+      <div class="order-header">
+        <div>
+          <div class="order-id" th:text="'Order #KAL-' + ${order.id}"></div>
+          <div class="order-date" th:text="${#temporals.format(order.orderDate, 'MMM dd, yyyy')}"></div>
+        </div>
+        <span class="status" th:text="${order.status}"
+              th:classappend="${'status-' + order.status}"></span>
+      </div>
+      <div class="order-items">
+        <div th:each="item : ${order.items}" class="order-item">
+          <div class="item-img">
+            <img th:if="${item.productImage != null}" th:src="@{'/uploads/' + ${item.productImage}}" th:alt="${item.productName}"/>
+            <span th:if="${item.productImage == null}">👗</span>
+          </div>
+          <div>
+            <div class="item-name" th:text="${item.productName}"></div>
+            <div class="item-sub" th:text="'Qty: ' + ${item.quantity} + ' × $' + ${item.price}"></div>
+          </div>
+          <div class="item-price" th:text="${'$' + item.subtotal}"></div>
+        </div>
+      </div>
+      <div class="order-footer">
+        <span style="font-size:0.82rem;color:var(--warm-grey)">
+          Shipping to: <span th:text="${order.shippingCity + ', ' + order.shippingState}"></span>
+        </span>
+        <span class="order-total" th:text="${'Total: $' + order.totalAmount}"></span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

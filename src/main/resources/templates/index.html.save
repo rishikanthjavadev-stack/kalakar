@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>KALAKAR — Wear Your Art</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;700&family=Bebas+Neue&family=Karla:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+    <style>
+        * { box-sizing: border-box; margin:0; padding:0; }
+
+        :root {
+            --saffron:#E8621A;
+            --night:#0F0C09;
+            --bone:#F2EDE4;
+            --cream:#EDE7D9;
+            --warm-grey:#9C9080;
+            --border:rgba(15,12,9,0.1);
+        }
+
+        body {
+            font-family:'Karla', sans-serif;
+            background:var(--bone);
+            color:var(--night);
+            overflow-x:hidden;
+        }
+
+        nav {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:1.2rem 3rem;
+            background:white;
+            border-bottom:1px solid var(--border);
+        }
+
+        .nav-links { list-style:none; display:flex; gap:2rem; }
+
+        .nav-links a { text-decoration:none; color:var(--warm-grey); }
+
+        .nav-right {
+            display:flex;
+            align-items:center;
+            gap:1rem;
+        }
+
+        .nav-user {
+            font-size:0.85rem;
+            color:var(--warm-grey);
+        }
+
+        .nav-logout {
+            font-size:0.85rem;
+            color:var(--saffron);
+            text-decoration:none;
+            padding:0.4rem 0.9rem;
+            border:1px solid var(--saffron);
+            transition:background 0.2s, color 0.2s;
+        }
+
+        .nav-logout:hover {
+            background:var(--saffron);
+            color:white;
+        }
+
+        .hero {
+            padding:6rem 3rem;
+            text-align:center;
+        }
+
+        .hero-title {
+            font-family:'Bebas Neue', sans-serif;
+            font-size:5rem;
+        }
+
+        .product-grid {
+            display:grid;
+            grid-template-columns:repeat(4,1fr);
+            gap:1.5rem;
+            padding:3rem;
+        }
+
+        .product-card {
+            background:white;
+            border:1px solid var(--border);
+            overflow:hidden;
+        }
+
+        .product-img {
+            aspect-ratio:3/4;
+            background:var(--cream);
+        }
+
+        .product-img img {
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
+
+        .product-meta { padding:1rem; }
+
+        .product-name {
+            font-family:'Cormorant Garamond', serif;
+            font-size:1.1rem;
+        }
+
+        .product-price {
+            font-weight:600;
+            margin-top:.5rem;
+        }
+
+        .product-actions {
+            display:flex;
+        }
+
+        .action-btn {
+            flex:1;
+            padding:.7rem;
+            border:none;
+            cursor:pointer;
+            background:var(--night);
+            color:white;
+        }
+
+        .action-btn.wish {
+            background:var(--cream);
+            color:var(--night);
+        }
+
+        footer {
+            padding:3rem;
+            text-align:center;
+            background:var(--night);
+            color:var(--bone);
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<nav>
+    <a href="/">KALAKAR</a>
+    <ul class="nav-links">
+        <li><a href="/products">Shop</a></li>
+        <li><a href="/about">Story</a></li>
+    </ul>
+
+    <div class="nav-right">
+        <!-- Show when NOT logged in -->
+        <div sec:authorize="!isAuthenticated()">
+            <a href="/login">Login</a>
+        </div>
+
+        <!-- Show when logged in -->
+        <div sec:authorize="isAuthenticated()" style="display:flex;align-items:center;gap:1rem;">
+            <span class="nav-user" sec:authentication="name"></span>
+            <a class="nav-logout" th:href="@{/logout}">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <h1 class="hero-title">WEAR YOUR STORY</h1>
+    <p>Clothing that speaks your art.</p>
+</section>
+
+<!-- PRODUCT SECTION -->
+<section>
+
+    <h2 style="padding-left:3rem;">Our Collection</h2>
+
+    <p style="padding-left:3rem;">
+        <span th:text="${#lists.size(products)} + ' pieces'">0 pieces</span>
+    </p>
+
+    <div class="product-grid">
+
+        <div th:if="${#lists.isEmpty(products)}"
+             style="grid-column:1/-1;text-align:center;padding:3rem;">
+            No products available.
+        </div>
+
+        <!-- Product Loop -->
+        <div class="product-card"
+             th:each="product : ${products}"
+             th:data-cat="${product.category}">
+
+            <div class="product-img">
+                <img th:if="${product.imageUrl != null}"
+                     th:src="@{'/uploads/' + ${product.imageUrl}}"
+                     th:alt="${product.name}"/>
+
+                <div th:if="${product.imageUrl == null}"
+                     style="display:flex;align-items:center;justify-content:center;height:100%;">
+                    👗
+                </div>
+            </div>
+
+            <div class="product-meta">
+                <div class="product-name" th:text="${product.name}"></div>
+                <div th:text="${product.category}"></div>
+                <div class="product-price" th:text="${'$' + product.price}"></div>
+            </div>
+
+            <div class="product-actions">
+                <button class="action-btn"
+                        th:onclick="'addToCart(' + ${product.id} + ')'">
+                    Add to Cart
+                </button>
+
+                <button class="action-btn wish"
+                        th:onclick="'wishlist(' + ${product.id} + ')'">
+                    ♡
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<footer>
+    © 2025 Kalakar — Developed by DRK
+</footer>
+
+<script>
+    let cartCount = 0;
+
+    function addToCart(id) {
+        cartCount++;
+        alert("Added product " + id + " to cart");
+    }
+
+    function wishlist(id) {
+        alert("Saved product " + id);
+    }
+</script>
+
+</body>
+</html>

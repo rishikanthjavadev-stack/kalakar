@@ -1,0 +1,20 @@
+# Maven
+target/
+*.class
+
+# Application secrets - NEVER commit these
+src/main/resources/application.properties
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+
+# Uploads (don't commit user images)
+uploads/
+
+# Logs
+*.log
