@@ -10,35 +10,25 @@
 
 ## 📸 Screenshots
 
-![Home Page]
-(screenshots/home.png)
+![Home Page](screenshots/home.png)
 
-![Login Page]
-(screenshots/login.png)
+![Login Page](screenshots/login.png)
 
-![Signin Page]
-(screenshots/signin.png)
+![Signin Page](screenshots/signin.png)
 
-![Checkout]
-(screenshots/checkout.png)
+![Checkout](screenshots/checkout.png)
 
-![AI Email]
-(screenshots/ai-email.png)
+![AI Email](screenshots/ai-email.png)
 
-![AI Email Confirmation]
-(screenshots/ai-emailconfirmation.png)
+![AI Email Confirmation](screenshots/ai-emailconfirmation.png)
 
-![Admin Dashboard]
-(screenshots/admin.png)
+![Admin Dashboard](screenshots/admin.png)
 
-![Admin Product Management]
-(screenshots/admin-products.png)
+![Admin Product Management](screenshots/admin-products.png)
 
-![User Orders]
-(screenshots/user-orders.png)
+![User Orders](screenshots/user-orders.png)
 
-![Logout]
-(screenshots/logout.png)
+![Logout](screenshots/logout.png)
 
 ---
 
