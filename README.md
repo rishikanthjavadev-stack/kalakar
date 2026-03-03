@@ -1,39 +1,44 @@
-
-
-![Logout](screenshots/logout.png)# KALAKAR — AI-Powered E-Commerce Platform
-
 ![Java](https://img.shields.io/badge/Java-21-orange?style=flat-square&logo=openjdk)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-brightgreen?style=flat-square&logo=springboot)
 ![Claude AI](https://img.shields.io/badge/Anthropic-Claude%20API-blueviolet?style=flat-square)
 ![MySQL](https://img.shields.io/badge/MySQL-8.0-blue?style=flat-square&logo=mysql)
 ![Stripe](https://img.shields.io/badge/Stripe-Payments-635BFF?style=flat-square&logo=stripe)
 ![Spring Security](https://img.shields.io/badge/Spring%20Security-6-darkgreen?style=flat-square&logo=springsecurity)
-
-> A production-grade, full-stack e-commerce platform for Indian ethnic fashion — built with Java 21 and Spring Boot 3.5, featuring an **autonomous AI agent** powered by Anthropic's Claude API that monitors orders, generates personalized customer communications, and operates 24/7 without human intervention.
-
+# KALAKAR — AI-Powered E-Commerce Platform
+> A modern, production-grade e-commerce platform for ethnic fashion built with Java 21 and Spring Boot 3.5. It integrates an autonomous AI agent powered by Anthropic’s Claude API to intelligently monitor orders, generate personalized customer communications, and ensure continuous, self-sustaining operations.
 ---
 
 ## 📸 Screenshots
 
-## Screenshots
+![Home Page]
+(screenshots/home.png)
 
-![Home Page](screenshots/home.png)
+![Login Page]
+(screenshots/login.png)
 
-![Login Page](screenshots/login.png)
+![Signin Page]
+(screenshots/signin.png)
 
-![Signin Page](screenshots/signin.png)
+![Checkout]
+(screenshots/checkout.png)
 
-![Checkout](screenshots/checkout.png)
+![AI Email]
+(screenshots/ai-email.png)
 
-![AI Email](screenshots/AI-email.png)
+![AI Email Confirmation]
+(screenshots/ai-emailconfirmation.png)
 
-![AI Email Confirmation](screenshots/Ai-emailconfirmation.png)
+![Admin Dashboard]
+(screenshots/admin.png)
 
-![Admin Dashboard](screenshots/admin.png)
+![Admin Product Management]
+(screenshots/admin-products.png)
 
-![Admin Product Management](screenshots/admin-products.png)
+![User Orders]
+(screenshots/user-orders.png)
 
-![User Orders](screenshots/user-orders.png)
+![Logout]
+(screenshots/logout.png)
 
 ---
 
