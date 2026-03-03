@@ -1,4 +1,24 @@
-# KALAKAR — AI-Powered E-Commerce Platform
+## Screenshots
+
+![Home Page](screenshots/home.png)
+
+![Login Page](screenshots/login.png)
+
+![Signin Page](screenshots/signin.png)
+
+![Checkout](screenshots/checkout.png)
+
+![AI Email](screenshots/AI-email.png)
+
+![AI Email Confirmation](screenshots/Ai-emailconfirmation.png)
+
+![Admin Dashboard](screenshots/admin.png)
+
+![Admin Product Management](screenshots/admin-products.png)
+
+![User Orders](screenshots/user-orders.png)
+
+![Logout](screenshots/logout.png)# KALAKAR — AI-Powered E-Commerce Platform
 
 ![Java](https://img.shields.io/badge/Java-21-orange?style=flat-square&logo=openjdk)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-brightgreen?style=flat-square&logo=springboot)
