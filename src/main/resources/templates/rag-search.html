@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>AI Product Search — Kalakar</title>
+    <style>
+        body { font-family: 'Karla', sans-serif; max-width: 900px;
+               margin: 2rem auto; padding: 0 1rem; background: #FAF8F5; }
+        .search-box { display: flex; gap: 0.5rem; margin: 2rem 0; }
+        .search-box input {
+            flex: 1; padding: 1rem; font-size: 1rem;
+            border: 1.5px solid #DDD; background: white;
+        }
+        .search-box button {
+            padding: 1rem 2rem; background: #0F0C09;
+            color: white; border: none; cursor: pointer;
+            font-family: inherit; font-size: 0.9rem;
+            letter-spacing: 0.05em;
+        }
+        .ai-response {
+            background: white; border-left: 4px solid #0F0C09;
+            padding: 1.5rem; margin: 1.5rem 0;
+            font-style: italic; color: #444;
+        }
+        .ai-label {
+            font-size: 0.75rem; font-weight: bold;
+            letter-spacing: 0.1em; color: #9C9080;
+            margin-bottom: 0.5rem; text-transform: uppercase;
+        }
+        .products-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem; margin-top: 1.5rem;
+        }
+        .product-card {
+            background: white; padding: 1.5rem;
+            border: 1px solid #EEE;
+        }
+        .product-name { font-weight: bold; margin-bottom: 0.5rem; }
+        .product-price { color: #0F0C09; font-size: 1.1rem; }
+        .product-desc { color: #888; font-size: 0.85rem;
+                        margin: 0.5rem 0; }
+        .btn-view {
+            display: inline-block; margin-top: 1rem;
+            padding: 0.5rem 1rem; background: #0F0C09;
+            color: white; text-decoration: none;
+            font-size: 0.8rem; letter-spacing: 0.05em;
+        }
+        h1 { font-size: 1.5rem; letter-spacing: 0.05em; }
+        .hint { color: #9C9080; font-size: 0.85rem; margin-top: 0.5rem; }
+    </style>
+</head>
+<body>
+
+    <h1>AI PRODUCT SEARCH</h1>
+    <p class="hint">Try: "warm jacket for winter" or
+       "casual outfit under $50" or "something for a wedding"</p>
+
+    <form action="/search/results" method="get">
+        <div class="search-box">
+            <input type="text" name="query"
+                   th:value="${query}"
+                   placeholder="Describe what you're looking for..."
+                   required/>
+            <button type="submit">SEARCH</button>
+        </div>
+    </form>
+
+    <!-- AI Response -->
+    <div th:if="${aiResponse}" class="ai-response">
+        <div class="ai-label">✦ AI Assistant</div>
+        <span th:text="${aiResponse}"></span>
+    </div>
+
+    <!-- Product Results -->
+    <div th:if="${products}" class="products-grid">
+        <div th:each="product : ${products}" class="product-card">
+            <div class="product-name" th:text="${product.name}"></div>
+            <div class="product-price"
+                 th:text="'$' + ${product.price}"></div>
+            <div class="product-desc"
+                 th:text="${product.description}"></div>
+            <a th:href="@{/products/{id}(id=${product.id})}"
+               class="btn-view">VIEW PRODUCT</a>
+        </div>
+    </div>
+
+</body>
+</html>

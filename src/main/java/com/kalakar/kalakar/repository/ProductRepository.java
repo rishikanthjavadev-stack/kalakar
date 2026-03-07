@@ -7,4 +7,8 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByCategory(String category);
     List<Product> findByNameContainingIgnoreCase(String name);
+
+    // RAG — find all products that have embeddings generated
+    java.util.List<com.kalakar.kalakar.model.Product> findByEmbeddingIsNotNull();
+
 }

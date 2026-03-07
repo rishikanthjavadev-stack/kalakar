@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/", "/login", "/register", "/forgot-password",
                     "/uploads/**", "/css/**", "/js/**", "/images/**",
-                    "/error", "/reset-password", "/access-denied", "/logout",
+                    "/error", "/reset-password", "/access-denied", "/logout", "/search", "/search/**", "/search/admin/**",
                     "/track", "/debug/me", "/debug/test-ai",
                     "/debug/test-welcome", "/debug/trigger-agent", "/debug/test-email"
                 ).permitAll()

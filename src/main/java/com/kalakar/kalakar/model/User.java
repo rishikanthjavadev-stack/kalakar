@@ -17,10 +17,15 @@ public class User {
     private String email;
 
     private String password;
-    private String role; // "ROLE_USER" or "ROLE_ADMIN"
+    private String role;
 
     private String resetToken;
     private LocalDateTime resetTokenExpiry;
+
+    // OAuth2 fields
+    private String provider;
+    private String providerId;
+    private String imageUrl;
 
     // Getters and Setters
     public Long getId() { return id; }
@@ -43,4 +48,13 @@ public class User {
 
     public LocalDateTime getResetTokenExpiry() { return resetTokenExpiry; }
     public void setResetTokenExpiry(LocalDateTime resetTokenExpiry) { this.resetTokenExpiry = resetTokenExpiry; }
+
+    public String getProvider() { return provider; }
+    public void setProvider(String provider) { this.provider = provider; }
+
+    public String getProviderId() { return providerId; }
+    public void setProviderId(String providerId) { this.providerId = providerId; }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 }

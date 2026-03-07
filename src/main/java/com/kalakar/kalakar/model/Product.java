@@ -20,14 +20,20 @@ public class Product {
     @Column(name = "old_price")
     private BigDecimal oldPrice;
 
-    private String badge; // "New", "Sale", or null
+    private String badge;
 
     @Column(name = "image_url")
     private String imageUrl;
 
-    // Add the description field if needed
     @Column(name = "description")
     private String description;
+
+    // RAG fields — store embedding vector as JSON
+    @Column(name = "embedding", columnDefinition = "LONGTEXT")
+    private String embedding;
+
+    @Column(name = "embedding_text", columnDefinition = "TEXT")
+    private String embeddingText;
 
     // Getters and Setters
     public Long getId() { return id; }
@@ -56,4 +62,10 @@ public class Product {
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+
+    public String getEmbedding() { return embedding; }
+    public void setEmbedding(String embedding) { this.embedding = embedding; }
+
+    public String getEmbeddingText() { return embeddingText; }
+    public void setEmbeddingText(String embeddingText) { this.embeddingText = embeddingText; }
 }
